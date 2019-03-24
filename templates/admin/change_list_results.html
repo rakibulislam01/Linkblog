@@ -1,4 +1,10 @@
 {% load i18n static %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<style>
+    .highlight{
+        background-color:yellow;
+    }
+</style>
 {% if result_hidden_fields %}
 <div class="hiddenfields">{# DIV for HTML validation #}
 {% for item in result_hidden_fields %}{{ item }}{% endfor %}
@@ -35,4 +41,45 @@
 </tbody>
 </table>
 </div>
+
+<script>
+   $(document).ready(function() {
+        var input = $('#searchbar').val();
+        var sp = []
+        var sp = input.split(" ")
+        for(var k = 0; k < sp.length; k++){
+            if(sp[k] != ''){
+                var items = document.querySelectorAll('td.field-title');
+                var items = Array.from(items);
+                for(var i = 0; i < items.length; i++){
+                    var text = $(items[i]).html();
+                    var array = [];
+                    var array = text.split(" ");
+                    for(var j = 0; j < array.length; j++){
+                        var values = text.match(new RegExp(sp[k], "ig"));
+                        var output = text.replace( values, '<span class="highlight">'+ values +'</span>');
+                        $(items[i]).html(output);
+                    }
+                }
+            }
+        }
+   });
+</script>
+
+<!--<script>-->
+   <!--$(document).ready(function() {-->
+        <!--var input = $('#searchbar').val();-->
+
+        <!--if(input != ''){-->
+            <!--var items = document.querySelectorAll('td.field-title');-->
+            <!--var items = Array.from(items);-->
+            <!--for(var i = 0; i < items.length; i++){-->
+                <!--var text = $(items[i]).html();-->
+                <!--var values = text.match(new RegExp(input, "ig"));-->
+                <!--var output = text.replace( values[0], '<span class="highlight">'+ values[0] +'</span>');-->
+                <!--$(items[i]).html(output);-->
+            <!--}-->
+        <!--}-->
+   <!--});-->
+<!--</script>-->
 {% endif %}
