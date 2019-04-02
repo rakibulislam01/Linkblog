@@ -45,23 +45,16 @@
 <script>
    $(document).ready(function() {
         var input = $('#searchbar').val();
-        var sp = []
-        var sp = input.split(" ")
-        for(var k = 0; k < sp.length; k++){
-            if(sp[k] != ''){
-                var items = document.querySelectorAll('td.field-title');
-                var items = Array.from(items);
-                for(var i = 0; i < items.length; i++){
-                    var text = $(items[i]).html();
-                    var array = [];
-                    var array = text.split(" ");
-                    for(var j = 0; j < array.length; j++){
-                        var values = text.match(new RegExp(sp[k], "ig"));
-                        var output = text.replace( values, '<span class="highlight">'+ values +'</span>');
-                        $(items[i]).html(output);
-                    }
-                }
+        var sp = input.split(" ");
+        var items = document.querySelectorAll('td.field-title');
+        var items = Array.from(items);
+        for(var i = 0; i < items.length; i++){
+            var text = $(items[i]).html();
+            for(var j = 0; j < sp.length; j++){
+                var values = text.match(new RegExp(sp[j], "ig"));
+                text = text.replace( values, '<span class="highlight">'+ values +'</span>');
             }
+            $(items[i]).html(text);
         }
    });
 </script>
