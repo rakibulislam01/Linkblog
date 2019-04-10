@@ -5,7 +5,8 @@ from .models import Post
 class PostModelAdmin(admin.ModelAdmin):
     list_display = ['id', 'title']
     list_filter = ['title']
-    search_fields = ['title', 'id']
+    search_fields = ['id', 'title']
+    list_display_links = ['title']
 
     # def get_search_results(self, request, queryset, search_term):
     #     queryset, use_distinct = super().get_search_results(request, queryset, search_term)

@@ -1,8 +1,23 @@
 {% load i18n static %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<style>
+    #changelist #toolbar form #searchbar{
+        height:25px;
+    }
+    #changelist #toolbar form input[type="submit"]{
+    padding-top:4px;
+    padding-bottom:4px;
+    }
+</style>
 {% if cl.search_fields %}
 <div id="toolbar"><form id="changelist-search" method="get">
 <div><!-- DIV needed for valid HTML -->
-<label for="searchbar"><img src="{% static "admin/img/search.svg" %}" alt="Search"></label>
+<!--<label for="searchbar"><img src="{% static "admin/img/search.svg" %}" alt="Search"></label>-->
+
+    <select id="sort-item" class="country">
+             <option value="id" >ID</option>
+             <option value="Title">TITLE</option>
+    </select>
 <input type="text" size="40" name="{{ search_var }}" value="{{ cl.query }}" id="searchbar" autofocus>
 <input type="submit" value="{% trans 'Find' %}" id="submitBtn">
 {% if show_result_count %}
@@ -14,3 +29,13 @@
 </div>
 </form></div>
 {% endif %}
+<script>
+window.onload = function() {
+    var selItem = sessionStorage.getItem("SelItem");
+    $('#sort-item').val(selItem);
+    }
+    $('#sort-item').change(function() {
+        var selVal = $(this).val();
+        sessionStorage.setItem("SelItem", selVal);
+    });
+</script>
