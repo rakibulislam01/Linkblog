@@ -51,30 +51,133 @@
 <!--    });-->
 <!--});-->
 
-   $(document).ready(function() {
-        var input = $('#searchbar').val();
-        var sp = input.split(" ");
+<!--   $(document).ready(function() {-->
+<!--        var input = $('#searchbar').val();-->
+<!--        var sp = input.split(" ");-->
 
-        var myEle = sessionStorage.getItem("SelItem");
-        console.log(myEle);
-        if(myEle == 'id'){
-            var items = document.querySelectorAll('td.field-id');
-        }
-        else{
-            var items = document.querySelectorAll('a');
-        }
+<!--        var myEle = sessionStorage.getItem("SelItem");-->
+<!--        console.log(myEle);-->
+<!--        if(myEle == 'id'){-->
+<!--            var items = document.querySelectorAll('td.field-id');-->
+<!--        }-->
+<!--        else{-->
+<!--            var items = document.querySelectorAll('a');-->
+<!--        }-->
 
-<!--        var items = document.querySelectorAll('a');-->
-        var items = Array.from(items);
-        for(var i = 0; i < items.length; i++){
-            var text = $(items[i]).html();
-            for(var j = 0; j < sp.length; j++){
-                var values = text.match(new RegExp(sp[j], "ig"));
-                text = text.replace( values, '<span class="highlight">'+ values +'</span>');
+<!--&lt;!&ndash;        var items = document.querySelectorAll('a');&ndash;&gt;-->
+<!--        var items = Array.from(items);-->
+<!--        for(var i = 0; i < items.length; i++){-->
+<!--            var text = $(items[i]).html();-->
+<!--            for(var j = 0; j < sp.length; j++){-->
+<!--                var values = text.match(new RegExp(sp[j], "ig"));-->
+<!--                text = text.replace( values, '<span class="highlight">'+ values +'</span>');-->
+<!--            }-->
+<!--            $(items[i]).html(text);-->
+<!--        }-->
+<!--   });-->
+
+
+
+
+
+
+$(document).ready(function() {
+        var replaceText = '';
+        var text = '';
+        var data = [];
+        var final = [];
+        var input = $('#filer_id').val();
+        if (input != '') {
+            var sp = input.split(" ");
+
+            / selecting distict values from input like for A , A it only takes one A /
+            function onlyUnique(value, index, self) {
+                return self.indexOf(value) === index;
             }
-            $(items[i]).html(text);
+            var unique = sp.filter(onlyUnique);
+
+            // Getting the text container DOM from table
+            var items = document.querySelectorAll('td.field-title');
+            // converting the Nodelist to Array
+            var items = Array.from(items);
+
+            for (var i = 0; i < items.length; i++) {
+                text = $(items[i]).html().trim();
+
+                for (var j = 0; j < unique.length; j++) {
+                    var patt = new RegExp(unique[j], "ig");
+                    while (match = patt.exec(text)) {
+                        data.push(match.index + '_' + (patt.lastIndex - 1) + '_' + match);
+                    }
+                }
+
+                for (var k = 0; k < data.length; k++) {
+
+                    data[k] = data[k].split('_');
+
+                }
+                data = bubbleSort(data);
+                var counter = 0;
+                for (var m = 0; m < data.length; m++) {
+
+                    if (m == 0) {
+                        var part = splitValue(text, counter, (parseInt(data[m][1]) + 1));
+                        part = part.replace(data[m][2], '<span class="highlight">' + data[m][2] + '</span>');
+                        final.push(part);
+                    } else {
+
+                        if (parseInt(data[m - 1][1]) == parseInt(data[m][0])) {
+
+                            var part = splitValue(text, counter, (parseInt(data[m][1])) - parseInt(data[m -
+                                1][
+                                1
+                            ]));
+                            var sub = data[m][2].substring(1);
+                            part = part.replace(sub, '<span class="highlight">' + sub +
+                                '</span>');
+                            final.push(part);
+                        } else {
+                            var part = splitValue(text, counter, (parseInt(data[m][1])) - parseInt(data[m -
+                                1][
+                                1
+                            ]));
+                            part = part.replace(data[m][2], '<span class="highlight">' + data[m][2] +
+                                '</span>');
+                            final.push(part);
+                        }
+                    }
+                }
+                if (text != '') {
+                    final.push(text);
+                }
+
+                $(items[i]).html(final.join(''));
+                data = [];
+                final = [];
+            }
         }
-   });
+
+        function splitValue(value, index1, index2) {
+            text = value.substring(index2);
+            return value.substring(index1, index2);
+        }
+
+        function bubbleSort(arr) {
+            var len = arr.length;
+            for (var i = len - 1; i >= 0; i--) {
+                for (var j = 1; j <= i; j++) {
+                    if (parseInt(arr[j - 1][0]) > parseInt(arr[j][0])) {
+                        var temp = arr[j - 1];
+                        arr[j - 1] = arr[j];
+                        arr[j] = temp;
+                    }
+                }
+            }
+            return arr;
+        }
+    });
+
+
 </script>
 
 <!--<script>-->
